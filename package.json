@@ -1,11 +1,15 @@
 {
-	"name": "obsidian-sample-plugin",
-	"version": "1.0.0",
-	"description": "This is a sample plugin for Obsidian (https://obsidian.md)",
+	"name": "obsidian-awesome-flashcard",
+	"version": "0.1.0",
+	"description": "Handy Anki integration for Obsidian.",
 	"main": "main.js",
 	"scripts": {
+		"clean": "del-cli -f main.js styles.css data.json build",
+		"rename_css": "node -e \"require('fs').rename('main.css', 'styles.css', function(err) { if (err) console.log(err); console.log('File successfully renamed!') })\"",
 		"dev": "node esbuild.config.mjs",
-		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
+		"test": "jest --ci",
+		"build": "npm run clean && tsc -noEmit -skipLibCheck && node esbuild.config.mjs production && npm run rename_css",
+		"release": "npm run build && mkdir build && shx cp main.js styles.css manifest.json build",
 		"version": "node version-bump.mjs && git add manifest.json versions.json"
 	},
 	"keywords": [],
@@ -15,10 +19,20 @@
 		"@types/node": "^16.11.6",
 		"@typescript-eslint/eslint-plugin": "5.29.0",
 		"@typescript-eslint/parser": "5.29.0",
+		"@types/crypto-js": "^4.1.1",
+		"@types/jest": "^29.1.2",
+		"jest": "^29.2.1",
+		"ts-jest": "^29.0.3",
+		"jest-environment-jsdom": "^29.2.1",
 		"builtin-modules": "3.3.0",
-		"esbuild": "0.14.47",
+		"esbuild": "0.15.12",
 		"obsidian": "latest",
 		"tslib": "2.4.0",
-		"typescript": "4.7.4"
+		"typescript": "4.8.4"
+	},
+	"dependencies": {
+		"crypto-js": "^4.1.1",
+		"del-cli": "^5.0.0",
+		"shx": "^0.3.4"
 	}
 }

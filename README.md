@@ -4,18 +4,21 @@ Plugin to sync flashcards in your Obsidian notes to Anki.
 
 ## Design philosophy
 
-- **Obsidian as the single source of truth**. Synchronizes flashcards only in one direction: from your Obsidian notes to
+- **Single source of truth**. Synchronizes flashcards only in one direction: from your Obsidian notes to
   Anki.
-- **Standard Markdown as flashcard format**. Introduces zero private syntax.
+- **Simplicity matters**. Only one simple way to define flashcard.
+- **Stick to openness**. Standard Markdown as flashcard format, Introduces zero private syntax.
+- **Minimal footprint**. Stores no private data on your notes. Does not affect your Anki learning progress.
 
 ## Features
 
-- Synchronizes all flashcards in your vault to Anki, in one direction.
-- Full Markdown syntax support: image, audio, video, code block, latex, table...
-- Supports defining deck names both vault-wide and file-wide
-- Supports defining tags both flashcard-wide and file-wide
-- Decent speed for incremental scanning
-- Quick link to corresponding Obsidian note
+- ♳ Synchronizes all flashcards in your vault to Anki, in one direction
+- ✍ Preserves Anki learning progress
+- ✒ Full Markdown syntax support: 🖼️image, 🎤audio, 🎞️video, 📟code block, 🔢LaTeX, 📋table...
+- 🎴 Supports defining deck names both vault-wide and file-wide
+- #️⃣ Supports defining tags both flashcard-wide and file-wide
+- ⚡ Decent speed for incremental scanning
+- 🔗 Quick link to corresponding Obsidian note
 
 ## Flashcard example
 
@@ -82,9 +85,10 @@ To fulfill these goals:
 - One-way synchronization from your Obsidian notes to Anki, and not vice versa. Auto adds new, removes deleted and
   updates obsolete flashcards
 - Does not affect your own flashcards (which are not from your Obsidian notes)
+- Stores no private data on your notes.
 
 The synchronization is designed as follows:
 
 - Flashcard's deck name and front text are combined to get a unique hash
 - Each flashcard from Obsidian is tagged with the hash to tell from your own flashcards
-- When scanning vault, it will diff flashcards in Obsidian and Anki based on unique hash, create decks and CRUD flashcards accordingly
+- When scanning vault, it will diff flashcards in Obsidian (computed dynamically) and Anki based on unique hash, create decks and CRUD flashcards accordingly

@@ -7,11 +7,14 @@ import {
 	clearUnusedTags,
 	ensureDecksExist,
 	getAnkiNoteHashes,
-	invoke
+	invoke,
+	storeMediaFile
 } from './anki'
 import {AnkiConnectNoteExt} from "./note";
 import {FilePath, NOTICE_TIMEOUT, Sha256, TIMEOUT_LIKE_INFINITY} from "./constants";
 import {mdToHtml} from "./markdown";
+// @ts-ignore
+import obStyle from './_obsidian_card.txt'
 
 async function isAnkiConnected(): Promise<boolean> {
 	console.info("Checking connection to Anki...")
@@ -33,6 +36,10 @@ export async function scanVault(plugin: AwesomeFlashcardPlugin) {
 	if (!(await isAnkiConnected())) {
 		return
 	}
+
+	// update obsidian card styles
+	const obStyleBase64 = btoa(unescape(encodeURIComponent(obStyle)))
+	await storeMediaFile('_obsidian_card.css', obStyleBase64)
 
 	const notice = new Notice(
 		`Awesome Flashcard: \nScanning vault... `,

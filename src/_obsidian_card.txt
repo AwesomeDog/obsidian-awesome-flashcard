@@ -1,3 +1,9 @@
+.mobile .obsidian-large-text {
+	zoom: 30%;
+}
+.obsidian-large-text {
+	zoom: 70%;
+}
 body {
   /*
 	List of variables is placed in body rather than :root so 

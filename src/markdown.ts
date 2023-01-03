@@ -51,7 +51,10 @@ export async function mdToHtml(plugin: AwesomeFlashcardPlugin, content: string):
 	html = html.replace('<button class="copy-code-button">Copy</button>', '')
 
 	// align left for large chunk of text
-	return `<style>@import url("_obsidian_card.css");</style><div style="text-align: left;">${html}</div>`
+	if (html.length > 100){
+		html = `<div style="text-align: left;" class="obsidian-large-text">${html}</div>`
+	}
+	return `<style>@import url("_obsidian_card.css");</style>${html}`
 }
 
 async function replaceAndUploadMedia(html: string, regex: RegExp, newTagGen: Function, plugin: AwesomeFlashcardPlugin) {

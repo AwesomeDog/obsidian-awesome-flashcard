@@ -44,7 +44,7 @@ export async function batchDelNotesBySha256(shaArr: Array<string>) {
 	let allNoteIds: Array<string> = []
 	for (let sha of shaArr) {
 		const noteIds: Array<string> = await findNotesBySha256(sha)
-		allNoteIds = [...allNoteIds, ...noteIds]
+		allNoteIds = allNoteIds.concat(noteIds)
 	}
 	console.log("Requesting batchDelNotesBySha256, shaArr: ", shaArr, " allNoteIds: ", allNoteIds)
 	if (!allNoteIds) {

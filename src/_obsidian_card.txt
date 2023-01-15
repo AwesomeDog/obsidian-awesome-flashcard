@@ -825,7 +825,7 @@ body {
   padding: 0;
   height: 100%;
   width: 100%;
-  overflow: hidden;
+  /*overflow: hidden;*/
 }
 body {
   text-rendering: optimizeLegibility;
@@ -842,7 +842,7 @@ body.is-translucent {
 body {
   user-select: none;
   -webkit-user-select: none;
-  overflow: hidden;
+  /*overflow: hidden;*/
 }
 body [contenteditable="true"],
 body [contenteditable=""] {

@@ -1,9 +1,16 @@
-.mobile .obsidian-large-text code.is-loaded {
+.obsidian-card {
+	text-align: left;
+}
+.mobile code.is-loaded {
 	zoom: 30%;
 }
-.obsidian-large-text code.is-loaded {
+code.is-loaded {
 	zoom: 70%;
 }
+button.copy-code-button {
+	display: none;
+}
+
 body {
   /*
 	List of variables is placed in body rather than :root so

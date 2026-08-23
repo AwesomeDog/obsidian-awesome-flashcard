@@ -92,3 +92,43 @@ The synchronization is designed as follows:
 - Flashcard's deck name and front text are combined to get a unique hash
 - Each flashcard from Obsidian is tagged with the hash to tell from your own flashcards
 - When scanning vault, it will diff flashcards in Obsidian (computed dynamically) and Anki based on unique hash, create decks and CRUD flashcards accordingly
+
+## Development
+
+Install the dependencies and build the plugin bundle:
+
+```bash
+npm install
+npm run build
+```
+
+To deploy the built plugin directly into an Obsidian vault, pass the vault path to
+the deploy command:
+
+```bash
+npm run deploy -- "/path/to/vault"
+```
+
+The command copies `main.js`, `manifest.json`, and `styles.css` to
+`.obsidian/plugins/obsidian-awesome-flashcard`. You can also set the
+`OBSIDIAN_VAULT` environment variable and omit the path. After deployment,
+enable **Awesome Flashcard** under Obsidian's community plugins. Restart
+Obsidian after changing `manifest.json`; for source-only changes, rebuild and
+reload the plugin.
+
+## Release
+
+After updating and committing the version in `manifest.json`, `package.json`,
+`package-lock.json`, and `versions.json`, create and push an annotated tag with
+the exact same version:
+
+```bash
+git tag -a 0.1.0 -m "0.1.0"
+git push origin 0.1.0
+```
+
+The tag-triggered GitHub Actions workflow checks the version, builds the
+plugin, and creates a draft GitHub release containing `main.js`,
+`manifest.json`, and `styles.css`. Review the generated release, add release
+notes, and publish it manually. The repository's Actions workflow permissions
+must allow read and write access to repository contents.

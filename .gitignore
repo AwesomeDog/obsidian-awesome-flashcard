@@ -10,6 +10,7 @@ node_modules
 
 # Don't include compiled plugin files in the repo.
 # They should be uploaded to GitHub releases instead.
+build/
 main.js
 styles.css
 

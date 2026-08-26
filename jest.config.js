@@ -1,17 +1,14 @@
+/** @type {import('jest').Config} */
 module.exports = {
-	verbose: true,
-	preset: 'ts-jest',
-	transform: {
-		'^.+\\.ts$': 'ts-jest',
-	},
-	module: {
-		rules: [
-			{
-				test: /\.txt/,
-				type: 'asset/source',
-			},
-		]
-	},
+	clearMocks: true,
+	moduleFileExtensions: ["js", "ts"],
+	moduleNameMapper: {"\\.(css|txt)$": "<rootDir>/tests/asset-stub.js"},
+	restoreMocks: true,
 	testEnvironment: "jsdom",
-	moduleFileExtensions: ['js', 'ts'],
+	transform: {
+		"^.+\\.tsx?$": ["@swc/jest", {
+			jsc: {parser: {syntax: "typescript"}, target: "es2022"},
+			module: {type: "commonjs"}
+		}],
+	}
 };

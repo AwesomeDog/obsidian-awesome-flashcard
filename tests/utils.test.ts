@@ -1,10 +1,15 @@
 import {describe, expect, test} from '@jest/globals';
-import {genSha256FromStr, getTagsFromRaw} from '../src/utils';
+import {genSha256FromArrayBuf, genSha256FromStr, getTagsFromRaw} from "../src/utils";
 
 describe('test utils module', () => {
 	// https://emn178.github.io/online-tools/sha256.html
 	test('test genSha256FromStr', () => {
 		expect(genSha256FromStr('aaa'))
+			.toBe('9834876dcfb05cb167a5c24953eba58c4ac89b1adf57f28f2f9d09af107ee8f0');
+	});
+
+	test('test genSha256FromArrayBuf', () => {
+		expect(genSha256FromArrayBuf(new Uint8Array([97, 97, 97]).buffer))
 			.toBe('9834876dcfb05cb167a5c24953eba58c4ac89b1adf57f28f2f9d09af107ee8f0');
 	});
 

@@ -102,6 +102,8 @@ npm install
 npm run build
 ```
 
+Run `npm run check` before submitting changes to execute linting, tests, and type checking together.
+
 To deploy the built plugin directly into an Obsidian vault, pass the vault path to
 the deploy command:
 

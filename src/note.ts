@@ -1,63 +1,37 @@
 import {genSha256FromStr} from "./utils";
 
+type NoteFields = {Front: string; Back: string};
+type NoteOptions = {allowDuplicate: boolean; duplicateScope: string};
+
 export class AnkiConnectNote {
-	deckName: string
-	modelName: string
-	fields: {
-		Front: string,
-		Back: string
-	}
-	options: {
-		allowDuplicate: boolean,
-		duplicateScope: string
-	}
-	tags: Array<string>
+	modelName = "Basic";
+	fields: NoteFields;
+	options: NoteOptions = {allowDuplicate: false, duplicateScope: "deck"};
 
 	constructor(
-		deckName: string,
+		public deckName: string,
 		fieldsFront: string,
 		fieldsBack: string,
-		tags: Array<string>
+		public tags: string[],
 	) {
-		this.deckName = deckName
-		this.modelName = 'Basic'
-		this.fields = {
-			Front: fieldsFront,
-			Back: fieldsBack
-		}
-		this.tags = tags
-		this.options = {
-			allowDuplicate: false,
-			duplicateScope: "deck"
-		}
+		this.fields = {Front: fieldsFront, Back: fieldsBack};
 	}
 }
 
 export class AnkiConnectNoteExt {
-	note: AnkiConnectNote
-	idSha256: string
-	filePath: string
+	note: AnkiConnectNote;
+	idSha256: string;
 
 	constructor(
 		deckName: string,
 		fieldsFront: string,
 		fieldsBack: string,
-		tags: Array<string>,
-		filePath: string,
+		tags: string[],
+		public filePath: string,
 	) {
-		this.note = new AnkiConnectNote(
-			deckName,
-			fieldsFront,
-			fieldsBack,
-			tags
-		)
-
-		this.filePath = filePath
-		// to evict cache when deck name changed
-		this.idSha256 = genSha256FromStr(this.note.deckName + this.note.fields.Front)
-		const idTag = "idsha256" + this.idSha256
-		if (!this.note.tags.includes(idTag)) {
-			this.note.tags.push(idTag)
-		}
+		this.note = new AnkiConnectNote(deckName, fieldsFront, fieldsBack, tags);
+		this.idSha256 = genSha256FromStr(deckName + fieldsFront);
+		const idTag = `idsha256${this.idSha256}`;
+		if (!tags.includes(idTag)) tags.push(idTag);
 	}
 }

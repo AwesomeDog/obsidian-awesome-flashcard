@@ -33,6 +33,7 @@ jobs:
       - name: Build plugin
         run: |
           npm ci
+          npm run check
           npm run build
 
       - name: Generate artifact attestation

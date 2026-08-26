@@ -1,3 +1,4 @@
+import {requestUrl} from "obsidian";
 import type {AnkiConnectNoteExt} from "./note";
 
 const ANKI_URL = "http://127.0.0.1:8765";
@@ -11,22 +12,28 @@ function isTwoFieldObject(value: unknown): value is Record<string, unknown> {
 }
 
 export async function invoke<T = unknown>(action: string, params: Params = {}): Promise<T> {
-	let response: Response;
+	let responseText: string;
 	try {
-		response = await fetch(ANKI_URL, {
+		const response = await requestUrl({
+			url: ANKI_URL,
 			method: "POST",
+			contentType: "application/json",
+			throw: false,
 			body: JSON.stringify({action, version: 6, params}),
 		});
-	} catch {
-		throw "failed to issue request";
+		responseText = response.text;
+	} catch (error) {
+		throw new Error("failed to issue request", {cause: error});
 	}
 
-	const payload: unknown = JSON.parse(await response.text());
+	const payload: unknown = JSON.parse(responseText);
 	if (!isTwoFieldObject(payload)) throw Error("response has an unexpected number of fields");
 	if (!Object.hasOwn(payload, "error")) throw Error("response is missing required error field");
 	if (!Object.hasOwn(payload, "result")) throw Error("response is missing required result field");
 	const responseData = payload as AnkiResponse;
-	if (responseData.error) throw responseData.error;
+	if (responseData.error) {
+		throw new Error(typeof responseData.error === "string" ? responseData.error : JSON.stringify(responseData.error));
+	}
 	return responseData.result as T;
 }
 
@@ -73,7 +80,8 @@ export async function batchModNotes(notes: AnkiConnectNoteExt[]): Promise<void> 
 		try {
 			await invoke("addNote", {note: note.note});
 		} catch (error) {
-			if (error !== DUPLICATE_NOTE_ERROR) throw error;
+			if (!(error instanceof Error)) throw new Error(String(error), {cause: error});
+			if (error.message !== DUPLICATE_NOTE_ERROR) throw new Error(error.message, {cause: error});
 			const [id] = await findNotesBySha256(note.idSha256);
 			const updatedNote = {id, ...note.note};
 			console.log("batchModNotes-->Updating note: ", updatedNote);

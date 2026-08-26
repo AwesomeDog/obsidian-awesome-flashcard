@@ -17,6 +17,15 @@ import type {FilePath, Sha256} from "./constants";
 import {genSha256FromArrayBuf, getTagsFromRaw, unionRecords} from "./utils";
 import obStyle from "./_obsidian_card.txt";
 
+function toBase64(value: string): string {
+	const bytes = new TextEncoder().encode(value);
+	let binary = "";
+	for (let offset = 0; offset < bytes.length; offset += 0x8000) {
+		binary += String.fromCharCode(...bytes.subarray(offset, offset + 0x8000));
+	}
+	return btoa(binary);
+}
+
 async function isAnkiConnected(): Promise<boolean> {
 	console.info("Checking connection to Anki...");
 	try {
@@ -34,7 +43,7 @@ export async function scanVault(plugin: AwesomeFlashcardPlugin): Promise<void> {
 	new Notice("Scanning vault, check console for details...");
 	if (!(await isAnkiConnected())) return;
 
-	await storeMediaFile("_obsidian_card.css", btoa(unescape(encodeURIComponent(obStyle))));
+	await storeMediaFile("_obsidian_card.css", toBase64(obStyle));
 	const notice = new Notice("Awesome Flashcard: \nScanning vault... ", TIMEOUT_LIKE_INFINITY);
 	const newFileHashes: Record<FilePath, Sha256> = {};
 	for (const file of app.vault.getMarkdownFiles()) {
@@ -89,7 +98,7 @@ export async function scanVault(plugin: AwesomeFlashcardPlugin): Promise<void> {
 
 	console.log("scanVault finished");
 	notice.setMessage("Awesome Flashcard: \nscanVault finished ");
-	setTimeout(() => notice.hide(), NOTICE_TIMEOUT);
+	window.setTimeout(() => notice.hide(), NOTICE_TIMEOUT);
 }
 
 export async function scanFile(filePath: string, plugin: AwesomeFlashcardPlugin): Promise<AnkiConnectNoteExt[]> {
@@ -120,7 +129,6 @@ export async function parseNotes(
 			return [front, tag, back.join("\n")] as const;
 		});
 	console.log("parseNotes... filePath: ", filePath, " processedContent: ", noteParts);
-
 	const notes: AnkiConnectNoteExt[] = [];
 	for (const [rawFront, rawTag, rawBack] of noteParts) {
 		const front = await mdToHtml(plugin, rawFront);

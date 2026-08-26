@@ -1,4 +1,4 @@
-import {MarkdownRenderer} from "obsidian";
+import {Component, MarkdownRenderer} from "obsidian";
 import {basename} from "node:path";
 import type {App} from "obsidian";
 import type AwesomeFlashcardPlugin from "./main";
@@ -22,7 +22,13 @@ function toBase64(data: ArrayBuffer): string {
 
 export async function mdToHtml(plugin: AwesomeFlashcardPlugin, content: string): Promise<string> {
 	const element = createDiv();
-	await MarkdownRenderer.render(plugin.app, content, element, ".", plugin);
+	const component = new Component();
+	component.load();
+	try {
+		await MarkdownRenderer.render(plugin.app, content, element, ".", component);
+	} finally {
+		component.unload();
+	}
 
 	let html = element.innerHTML;
 	for (const [regex, tagGenerator] of MEDIA_PATTERNS) {

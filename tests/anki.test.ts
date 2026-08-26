@@ -10,6 +10,16 @@ import {
 } from "../src/anki";
 import {AnkiConnectNoteExt} from "../src/note";
 
+jest.mock("obsidian", () => ({
+	requestUrl: async (request: {url: string; method?: string; body?: string}) => {
+		const response = await globalThis.fetch(request.url, {
+			method: request.method,
+			body: request.body,
+		});
+		return {text: await response.text()};
+	},
+}), {virtual: true});
+
 const mockFetch = jest.fn();
 const response = (result: unknown, error: unknown = null) =>
 	({text: async () => JSON.stringify({result, error})} as Response);

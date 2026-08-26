@@ -1,5 +1,5 @@
 import {addIcon, Notice, Plugin, PluginSettingTab, Setting} from "obsidian";
-import type {App} from "obsidian";
+import type {App, SettingDefinitionItem} from "obsidian";
 import {ANKI_ICON} from "./constants";
 import type {FilePath, Sha256} from "./constants";
 import {scanVault} from "./manager";
@@ -64,7 +64,7 @@ class AwesomeFlashcardSettingTab extends PluginSettingTab {
 	display(): void {
 		const {containerEl} = this;
 		containerEl.empty();
-		containerEl.createEl("h2", {text: "Awesome Flashcard Setting"});
+		new Setting(containerEl).setName("Awesome Flashcard Setting").setHeading();
 
 		new Setting(containerEl)
 			.setName("Default deck name")
@@ -86,5 +86,38 @@ class AwesomeFlashcardSettingTab extends PluginSettingTab {
 					await this.plugin.clearCache();
 					new Notice("Cache cleared successfully!");
 				}));
+	}
+
+	getSettingDefinitions(): SettingDefinitionItem[] {
+		return [
+			{
+				type: "group",
+				heading: "Awesome Flashcard Setting",
+				items: [
+					{
+						name: "Default deck name",
+						desc: "Use this as default deck name if 'deckName' not present in YAML header",
+						control: {type: "text", key: "defaultDeckName", defaultValue: DEFAULT_SETTINGS.defaultDeckName},
+					},
+					{
+						name: "Clear all cache",
+						desc: "Clear the cached data. Absolutely safe but may slow down the next scan for once",
+						action: () => {
+							void this.plugin.clearCache().then(() => new Notice("Cache cleared successfully!"));
+						},
+					},
+				],
+			},
+		];
+	}
+
+	override getControlValue(key: string): unknown {
+		return key === "defaultDeckName" ? this.plugin.settings.defaultDeckName : undefined;
+	}
+
+	override async setControlValue(key: string, value: unknown): Promise<void> {
+		if (key !== "defaultDeckName" || typeof value !== "string") return;
+		this.plugin.settings.defaultDeckName = value;
+		await this.plugin.clearCache();
 	}
 }

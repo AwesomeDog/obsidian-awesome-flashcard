@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-awesome-flashcard",
-	"version": "0.1.2",
+	"version": "0.1.3",
 	"description": "Handy Anki integration for Obsidian.",
 	"main": "main.js",
 	"engines": {

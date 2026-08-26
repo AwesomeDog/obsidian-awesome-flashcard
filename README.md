@@ -120,17 +120,15 @@ reload the plugin.
 
 ## Release
 
-After updating and committing the version in `manifest.json`, `package.json`,
-`package-lock.json`, and `versions.json`, create and push an annotated tag with
-the exact same version:
+Use npm's version command to update `package.json`, `package-lock.json`,
+`manifest.json`, and `versions.json`, then push the generated commit and tag
+(tags intentionally have no `v` prefix):
 
 ```bash
-git tag -a 0.1.0 -m "0.1.0"
-git push origin 0.1.0
+npm version patch
+git push origin main --follow-tags
 ```
 
-The tag-triggered GitHub Actions workflow checks the version, builds the
+Pushing the tag starts the release workflow. It checks the version, builds the
 plugin, and creates a draft GitHub release containing `main.js`,
-`manifest.json`, and `styles.css`. Review the generated release, add release
-notes, and publish it manually. The repository's Actions workflow permissions
-must allow read and write access to repository contents.
+`manifest.json`, and `styles.css` for review and publication.

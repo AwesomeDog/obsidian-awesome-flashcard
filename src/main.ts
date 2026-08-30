@@ -64,7 +64,6 @@ class AwesomeFlashcardSettingTab extends PluginSettingTab {
 	display(): void {
 		const {containerEl} = this;
 		containerEl.empty();
-		new Setting(containerEl).setName("Awesome Flashcard Setting").setHeading();
 
 		new Setting(containerEl)
 			.setName("Default deck name")
@@ -91,22 +90,16 @@ class AwesomeFlashcardSettingTab extends PluginSettingTab {
 	getSettingDefinitions(): SettingDefinitionItem[] {
 		return [
 			{
-				type: "group",
-				heading: "Awesome Flashcard Setting",
-				items: [
-					{
-						name: "Default deck name",
-						desc: "Use this as default deck name if 'deckName' not present in YAML header",
-						control: {type: "text", key: "defaultDeckName", defaultValue: DEFAULT_SETTINGS.defaultDeckName},
-					},
-					{
-						name: "Clear all cache",
-						desc: "Clear the cached data. Absolutely safe but may slow down the next scan for once",
-						action: () => {
-							void this.plugin.clearCache().then(() => new Notice("Cache cleared successfully!"));
-						},
-					},
-				],
+				name: "Default deck name",
+				desc: "Use this as default deck name if 'deckName' not present in YAML header",
+				control: {type: "text", key: "defaultDeckName", defaultValue: DEFAULT_SETTINGS.defaultDeckName},
+			},
+			{
+				name: "Clear all cache",
+				desc: "Clear the cached data. Absolutely safe but may slow down the next scan for once",
+				action: () => {
+					void this.plugin.clearCache().then(() => new Notice("Cache cleared successfully!"));
+				},
 			},
 		];
 	}

@@ -76,7 +76,7 @@ an Anki icon like this:
 </svg>
 
 Click it and the plugin will do the rest for you.
-Process is shown on Notice and in the [Obsidian Developer Console](https://forum.obsidian.md/t/how-to-access-the-console/16703/9)
+Progress is shown in Obsidian notices.
 
 ## Synchronization mechanism clarified
 

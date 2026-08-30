@@ -44,7 +44,6 @@ async function replaceAndUploadMedia(
 	plugin: AwesomeFlashcardPlugin,
 ): Promise<string> {
 	for (const {mediaTag, mediaPath} of extractMediaFromHtml(html, regex)) {
-		console.log("mediaTag is: ", mediaTag, " mediaPath is: ", mediaPath);
 		const mediaFullPath = getLinkFullPath(plugin.app, mediaPath);
 		if (!mediaFullPath) continue;
 

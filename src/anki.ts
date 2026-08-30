@@ -39,14 +39,12 @@ export async function invoke<T = unknown>(action: string, params: Params = {}): 
 
 export async function getAnkiNoteHashes(): Promise<string[]> {
 	const tags = await invoke<string[]>("getTags");
-	console.log("getAnkiNoteHashes tag list: ", tags);
 	return tags.filter((tag) => tag.startsWith("idsha256")).map((tag) => tag.slice(8)).filter((hash) => hash.length === 64);
 }
 
 export async function batchDelNotesBySha256(hashes: string[]): Promise<void> {
 	const noteIds: number[] = [];
 	for (const hash of hashes) noteIds.push(...await findNotesBySha256(hash));
-	console.log("Requesting batchDelNotesBySha256, shaArr: ", hashes, " allNoteIds: ", noteIds);
 	await invoke("deleteNotes", {notes: noteIds});
 }
 
@@ -59,19 +57,15 @@ export async function ensureDecksExist(deckNames: string[]): Promise<void> {
 }
 
 export async function clearUnusedTags(): Promise<void> {
-	console.info("Requesting clearUnusedTags...");
 	await invoke("clearUnusedTags");
 }
 
 export async function mediaFileExists(filename: string): Promise<boolean> {
-	console.info("Requesting mediaFileExists...");
 	const files = await invoke<string[]>("getMediaFilesNames", {pattern: filename});
-	console.log("files: ", files);
 	return files.length > 0;
 }
 
 export async function storeMediaFile(filename: string, data: string): Promise<void> {
-	console.info("Requesting storeMediaFile...");
 	await invoke("storeMediaFile", {filename, data});
 }
 
@@ -84,7 +78,6 @@ export async function batchModNotes(notes: AnkiConnectNoteExt[]): Promise<void> 
 			if (error.message !== DUPLICATE_NOTE_ERROR) throw new Error(error.message, {cause: error});
 			const [id] = await findNotesBySha256(note.idSha256);
 			const updatedNote = {id, ...note.note};
-			console.log("batchModNotes-->Updating note: ", updatedNote);
 			await invoke("updateNoteFields", {note: updatedNote});
 			await syncTags(id, note);
 		}

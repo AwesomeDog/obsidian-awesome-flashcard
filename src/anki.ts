@@ -56,6 +56,22 @@ export async function ensureDecksExist(deckNames: string[]): Promise<void> {
 	for (const deck of deckNames) await invoke("createDeck", {deck});
 }
 
+export const BASIC_MODEL_NAME = "Basic";
+
+export async function ensureBasicModelExists(): Promise<void> {
+	const modelNames = await invoke<string[]>("modelNames");
+	if (modelNames.includes(BASIC_MODEL_NAME)) return;
+	try {
+		await invoke("createModel", {
+			modelName: BASIC_MODEL_NAME,
+			inOrderFields: ["Front", "Back"],
+			cardTemplates: [{Name: "Card 1", Front: "{{Front}}", Back: "{{FrontSide}}<hr id=answer>{{Back}}"}],
+		});
+	} catch (error) {
+		throw new Error(`failed to create the "${BASIC_MODEL_NAME}" note type, please add it manually in Anki`, {cause: error});
+	}
+}
+
 export async function clearUnusedTags(): Promise<void> {
 	await invoke("clearUnusedTags");
 }

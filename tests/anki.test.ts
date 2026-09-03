@@ -3,6 +3,7 @@ import {
 	batchDelNotesBySha256,
 	batchModNotes,
 	clearUnusedTags,
+	ensureBasicModelExists,
 	ensureDecksExist,
 	getAnkiNoteHashes,
 	invoke,
@@ -41,6 +42,20 @@ describe("Anki integration", () => {
 	test("handles an empty deletion batch", async () => expect(batchDelNotesBySha256([])).resolves.toBeUndefined());
 	test("clears unused tags", async () => expect(clearUnusedTags()).resolves.toBeUndefined());
 	test("creates requested decks", async () => expect(ensureDecksExist(["a", "b", "c"])).resolves.toBeUndefined());
+	test("keeps an existing Basic model untouched", async () => {
+		mockFetch.mockResolvedValueOnce(response(["Einfach", "Basic"]));
+		await expect(ensureBasicModelExists()).resolves.toBeUndefined();
+		expect(mockFetch).toHaveBeenCalledTimes(1);
+	});
+	test("creates the Basic model when it is localised away", async () => {
+		mockFetch.mockResolvedValueOnce(response(["Einfach", "Lückentext"]));
+		await expect(ensureBasicModelExists()).resolves.toBeUndefined();
+		const [, init] = mockFetch.mock.calls[1] as [unknown, RequestInit];
+		expect(JSON.parse(String(init?.body))).toMatchObject({
+			action: "createModel",
+			params: {modelName: "Basic", inOrderFields: ["Front", "Back"]},
+		});
+	});
 	test("adds a note", async () => {
 		const note = new AnkiConnectNoteExt("Default", "F", "B", ["tag1", "tag2"], "a/b.md");
 		await expect(batchModNotes([note])).resolves.toBeUndefined();

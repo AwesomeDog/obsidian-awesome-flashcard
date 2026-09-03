@@ -4,6 +4,7 @@ import {
 	batchDelNotesBySha256,
 	batchModNotes,
 	clearUnusedTags,
+	ensureBasicModelExists,
 	ensureDecksExist,
 	getAnkiNoteHashes,
 	invoke,
@@ -53,6 +54,7 @@ export async function scanVault(plugin: AwesomeFlashcardPlugin): Promise<void> {
 			return;
 		}
 
+		await ensureBasicModelExists();
 		await storeMediaFile("_obsidian_card.css", toBase64(obStyle));
 		const newFileHashes: Record<FilePath, Sha256> = {};
 		for (const file of app.vault.getMarkdownFiles()) {
